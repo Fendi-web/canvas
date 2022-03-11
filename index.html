@@ -8,57 +8,32 @@
    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    
-  <!--<div id="canvas"></div>
-    <script>
-      //  canvas.onclick = (e)=>{
-    // 上面这个意思是鼠标点击会怎样
-        canvas.onmousemove = (e)=>{
-         //onmousemove是鼠标移动就会怎样   
-            console.log(e.clientX)
-            console.log(e.clientY)
-   let div = document.createElement('div')
-   //document是文档也就是当前网页，create是创建，element是标签。
-   //让文档创建标签。这种东西就是API,是文档里面写好的。
-   div.style.position = 'absolute'
-   div.style.left = e.clientX +'px'
-   div.style.top = e.clientY +'px'
-   
-   div.style.width = '6px'
-   div.style.height='6px'
-   //创建标签后，显示他们的位置
-   //鼠标在红框的左上角，所以下面要调整一下他们的位置
-   div.style.marginLeft = '-3px'
-   div.style.marginTop = '-3px'
-   //这样就在中间了
-   div.style.borderRadius = '50%'
-   //把矩形变成了圆圈
-   div.style.backgroundColor = 'black'
-   //把圆圈变成实心
-   canvas.appendChild(div)//把创建的div放入canvas里面，就可以在页面显示了
-        }
-    上面这个被隐藏的内容是用div做的，但是效果不好，下面用canvas来做   
-    </script>
-    -->
-    
     <canvas id="canvas" width="100" height="100"></canvas>
-    <!--canvas很神奇，可以直接在标签内写大小-->
-    <!--换成canvas后页面在下端和右端出现两个滚动条，因为他的display为inline，我们在css里面给他换成block。右遍的滚动条就消失了，将宽度设置为100vw，height：100vh-->
-    <!--canvas的大小一开始就在标签里确认好了，如果后期再css里面给他设置大小，就会在原有的基础上进行拉伸，导致很模糊，所以删掉css里面的宽度和高度-->
-    <!--所以canvas一开始就要设置为屏幕大小的宽高，用console.log(document.body.clientWidth)来获取屏幕的宽度-->
     <script>
          let canvas = document.getElementById("canvas");
          canvas.width = document.documentElement.clientWidth
          canvas.height = document.documentElement.clientHeight
          let ctx = canvas.getContext("2d");
+         ctx.fillStyle = "black";
+         ctx.strokeStyle = 'none'
 
          let painting = false
 
+        var isTouchDevice = 'ontouchstart' in document.documentElement;
+        if(isTouchDevice){
 
-        ctx.fillStyle = "black";
-        ctx.strokeStyle = 'none'
+            canvas.ontouchmove = (e) =>{
+            let x = e.touches[0].clientX
+            let y = e.touches[0].clientY
+            ctx.beginPath();
+            ctx.arc(x,y,10,0,2*Math.PI);
+            ctx.stroke();
+            ctx.fill();
+         }
 
-        canvas.onmousedown = ()=>{
+        }else{
+
+          canvas.onmousedown = ()=>{
 
             painting = true
         }
@@ -67,19 +42,23 @@
            if (painting === true){  
 
             ctx.beginPath();
-            ctx.arc(e.clientX,e.clientY,10,10,0,2*Math.PI);
+            ctx.arc(e.clientX,e.clientY,10,0,2*Math.PI);
             ctx.stroke();
             ctx.fill();
 
              // ctx.fillRect(e.clientX-5,e.clientY-5,10,10)//（起始横坐标，起始纵坐标，宽度，高度）
-    }else{
-        console.log('什么都不做')
+   
     }
 
         }
        canvas.onmouseup = () =>{
            painting = false
        }
+
+        }
+
+
+        
         
 
 
